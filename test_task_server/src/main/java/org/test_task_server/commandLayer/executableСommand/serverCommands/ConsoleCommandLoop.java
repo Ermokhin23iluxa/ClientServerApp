@@ -34,6 +34,7 @@ public class ConsoleCommandLoop implements Runnable{
                         System.out.println("Использование: save <filename>");
                         break;
                     }
+                    fds,f,fs,fs
                     if (topicService.saveToFile(parts[1])) {
                         System.out.println("Успешно сохранено в " + parts[1]);
                     } else {
