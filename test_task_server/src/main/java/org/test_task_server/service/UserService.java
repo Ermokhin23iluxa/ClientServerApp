@@ -18,9 +18,6 @@ public class UserService {
         return true;
     }
 
-    public Channel getUserChannel(String username) {
-        return users.get(username);
-    }
     public void logout(String username) {
         users.remove(username);
     }

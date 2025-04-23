@@ -47,16 +47,6 @@ public class Vote {
         return true;
     }
 
-
-    public boolean removeVote(String option, String username) {
-        if (!results.containsKey(option)) {
-            return false;
-        }
-        return results.get(option).remove(username);
-    }
-
-
-
     private String calculateResultsSummary() {
         StringBuilder sb = new StringBuilder();
         for (String option : options) {

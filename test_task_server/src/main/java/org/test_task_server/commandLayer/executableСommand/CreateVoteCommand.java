@@ -32,7 +32,6 @@ public class CreateVoteCommand implements Command {
         if(topicService.getTopic(topicName)==null){
             return "Ошибка: Раздел '" + topicName + "' не существует.";
         }
-        // Добавляем в конвейер переходной хэндлер для интерактивного ввода данных для голосования.
         ctx.pipeline()
                 .addBefore("mainHandler",
                         "VoteCreationHandler",
