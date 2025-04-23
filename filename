@@ -1,0 +1,25 @@
+{
+  "topic1" : {
+    "topicName" : "topic1",
+    "votes" : { }
+  },
+  "topic2" : {
+    "topicName" : "topic2",
+    "votes" : { }
+  },
+  "topic3" : {
+    "topicName" : "topic3",
+    "votes" : {
+      "vote3" : {
+        "voteName" : "vote3",
+        "voteDescription" : "vote3",
+        "createdBy" : "il",
+        "options" : [ "one", "two" ],
+        "results" : {
+          "one" : [ "il", "name" ],
+          "two" : [ ]
+        }
+      }
+    }
+  }
+}
