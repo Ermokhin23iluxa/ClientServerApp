@@ -1,5 +1,4 @@
 # ClientServerApp
-# ClientServerApp
 # Netty Voting Server & Client
 
 ## Описание проекта
