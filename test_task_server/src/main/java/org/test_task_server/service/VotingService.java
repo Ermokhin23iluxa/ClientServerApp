@@ -8,7 +8,6 @@ import org.test_task_server.commandLayer.entity.Vote;
 public class VotingService {
     private final TopicService topicService;
 
-
     public boolean deleteVote(String topicName, String voteName, String currentUser) {
         Topic topic = topicService.getTopic(topicName);
         if (topic == null) {
