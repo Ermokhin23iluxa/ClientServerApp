@@ -4,9 +4,6 @@ import io.netty.channel.ChannelHandlerContext;
 import lombok.Getter;
 import lombok.Setter;
 import org.test_task_server.commandLayer.executableСommand.*;
-import org.test_task_server.commandLayer.executableСommand.serverCommands.ExitServerCommand;
-import org.test_task_server.commandLayer.executableСommand.serverCommands.LoadCommand;
-import org.test_task_server.commandLayer.executableСommand.serverCommands.SaveCommand;
 import org.test_task_server.service.TopicService;
 import org.test_task_server.service.UserService;
 import org.test_task_server.service.VotingService;
@@ -24,7 +21,7 @@ public class CommandManager {
         commands.put("create topic", new CreateTopicCommand(topicService));
         commands.put("view", new ViewCommand(topicService));
         commands.put("create vote", new CreateVoteCommand(topicService));
-        commands.put("vote", new VoteCommand(votingService));
+        commands.put("vote", new VoteCommand(votingService,topicService));
         commands.put("delete", new DeleteVoteCommand(votingService));
         commands.put("help", new HelpCommand());
         commands.put("exit", new ExitCommand(userService));

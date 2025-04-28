@@ -6,50 +6,43 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.RequiredArgsConstructor;
 import org.test_task_server.commandLayer.entity.Topic;
 import org.test_task_server.commandLayer.entity.Vote;
+import org.test_task_server.commandLayer.repository.TopicRepository;
 
 import java.io.File;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-
+@RequiredArgsConstructor
 public class TopicService {
 
-    private final Map<String,Topic> topics = new ConcurrentHashMap<>();
+    //private final Map<String,Topic> topics = new ConcurrentHashMap<>();
+
+    private final TopicRepository topicRepository;
 
     private final ObjectMapper mapper = new ObjectMapper()
             .enable(SerializationFeature.INDENT_OUTPUT);
 
     // создание раздела
     public boolean createTopic(String topicName) {
-        if (topicName == null || topicName.trim().isEmpty()) {
-            return false;
-        }
-        Topic newTopic = new Topic(topicName);
-        return topics.putIfAbsent(topicName, newTopic) == null;
+        if (topicName == null || topicName.trim().isEmpty()) return false;
+        return topicRepository.save(new Topic(topicName));
     }
-
 
     // возврат раздела по имени
     public Topic getTopic(String topicName){
-        return topics.get(topicName);
+        return topicRepository.findByName(topicName);
     }
-
 
     public Map<String, Topic> getTopics() {
-        return new ConcurrentHashMap<>(topics);
+        return topicRepository.findAll();
     }
 
-
     public boolean addVoteInTopic(String topicName, Vote vote){
-        Topic topic = getTopic(topicName);
-        if(topic!=null){
-            return topic.addVote(vote);
-        }
-        return false;
+        Topic topic = topicRepository.findByName(topicName);
+        return topic!=null && topic.addVote(vote);
     }
 
     public String getTopicVotes(String topicName) {
-        Topic topic = topics.get(topicName);
+        Topic topic = topicRepository.findByName(topicName);
         if (topic == null) {
             return "Ошибка: раздел '" + topicName + "' не найден.";
         }
@@ -57,32 +50,17 @@ public class TopicService {
     }
 
     public String getVoteInfo(String topicName, String voteName) {
-        Topic topic = topics.get(topicName);
+        Topic topic = topicRepository.findByName(topicName);
         if (topic == null) {
             return "Ошибка: раздел '" + topicName + "' не найден.";
         }
-        Vote vote = topic.getVote(voteName);
-        if (vote == null) {
-            return "Ошибка: голосование '" + voteName + "' не найдено в разделе '" + topicName + "'.";
-        }
-        StringBuilder sb = new StringBuilder();
-        sb.append("Голосование: ").append(vote.getVoteName()).append("\n")
-                .append("Описание: ").append(vote.getVoteDescription()).append("\n")
-                .append("Создано: ").append(vote.getCreatedBy()).append("\n")
-                .append("Варианты:\n");
-        for (String option : vote.getOptions()) {
-            sb.append("- ")
-                    .append(option)
-                    .append(": ")
-                    .append(vote.calculateVotesForOption(option))
-                    .append(" голосов\n");
-        }
-        return sb.toString();
+        return topic.getVoteInfo(voteName);
+
     }
 
     public boolean saveToFile(String filename){
         try{
-            mapper.writeValue(new File(filename),topics);
+            mapper.writeValue(new File(filename),topicRepository.findAll());
             return true;
         } catch (Exception e){
             e.printStackTrace();
@@ -98,8 +76,7 @@ public class TopicService {
                             Map.class,String.class, Topic.class
                     )
             );
-            topics.clear();
-            topics.putAll(loaded);
+            topicRepository.saveAllFile(loaded);
             return true;
         } catch (Exception e){
             e.printStackTrace();

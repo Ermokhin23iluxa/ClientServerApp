@@ -13,12 +13,14 @@ public class VoteOptionHandler extends SimpleChannelInboundHandler<String> {
     private final VotingService votingService;
 
     @Override
-    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
-        ctx.writeAndFlush("Введите вариант, за который голосуете:\n");
+    public void handlerAdded(ChannelHandlerContext ctx) {
+        ctx.writeAndFlush("Введите вариант, за который голосуете:");
+
     }
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, String msg) {
         String chosenOption = msg.trim();
+
         if (chosenOption.isEmpty()) {
             ctx.writeAndFlush("Вариант не может быть пустым. Повторите ввод:");
             return;
@@ -33,7 +35,7 @@ public class VoteOptionHandler extends SimpleChannelInboundHandler<String> {
         ctx.pipeline().remove(this);
     }
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         cause.printStackTrace();
         ctx.writeAndFlush("Ошибка при регистрации голоса: " + cause.getMessage() );
         ctx.pipeline().remove(this);

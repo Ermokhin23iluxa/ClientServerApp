@@ -2,6 +2,7 @@ package org.test_task_server.commandLayer.executableСommand;
 
 import io.netty.channel.ChannelHandlerContext;
 import lombok.RequiredArgsConstructor;
+import org.test_task_server.commandLayer.attribute.ChannelAttributes;
 import org.test_task_server.service.TopicService;
 
 @RequiredArgsConstructor
@@ -11,6 +12,9 @@ public class ViewCommand implements Command{
 
     @Override
     public String execute(String[] args, ChannelHandlerContext ctx) {
+        if(ctx.channel().attr(ChannelAttributes.USERNAME).get()==null){
+            return "Ошибка: Не выполнен вход. Сначала выполните login.";
+        }
         if(args.length==1 && args[0].equals("view")){
             return topicService.getTopics().values().toString();
         }

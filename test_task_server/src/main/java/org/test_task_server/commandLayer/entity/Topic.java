@@ -49,4 +49,24 @@ public class Topic {
     public Vote getVote(String voteName){
         return votes.get(voteName);
     }
+
+    public String getVoteInfo(String voteName) {
+        Vote vote = this.getVote(voteName);
+        if (vote == null) {
+            return "Ошибка: голосование '" + voteName + "' не найдено в разделе '" + topicName + "'.";
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("Голосование: ").append(vote.getVoteName()).append("\n")
+                .append("Описание: ").append(vote.getVoteDescription()).append("\n")
+                .append("Создано: ").append(vote.getCreatedBy()).append("\n")
+                .append("Варианты:\n");
+        for (String option : vote.getOptions()) {
+            sb.append("- ")
+                    .append(option)
+                    .append(": ")
+                    .append(vote.calculateVotesForOption(option))
+                    .append(" голосов\n");
+        }
+        return sb.toString();
+    }
 }

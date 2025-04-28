@@ -11,6 +11,8 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import org.test_task_server.commandLayer.CommandManager;
 import org.test_task_server.commandLayer.executableСommand.serverCommands.ConsoleCommandLoop;
+import org.test_task_server.commandLayer.repository.InMemoryTopicRepository;
+import org.test_task_server.commandLayer.repository.TopicRepository;
 import org.test_task_server.configuration.Config;
 import org.test_task_server.handlers.MainHandler;
 import org.test_task_server.service.TopicService;
@@ -22,7 +24,10 @@ public class ServerApplication {
     public static void main(String[] args) {
         int port = Config.getPort();
         UserService userService = new UserService();
-        TopicService topicService = new TopicService();
+
+        TopicRepository topicRepo = new InMemoryTopicRepository();
+        TopicService topicService = new TopicService(topicRepo);
+
         VotingService votingService = new VotingService(topicService);
         CommandManager commandManager = new CommandManager(userService,topicService,votingService);
 
@@ -35,7 +40,7 @@ public class ServerApplication {
                     .channel(NioServerSocketChannel.class)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
-                        protected void initChannel(SocketChannel socketChannel) throws Exception {
+                        protected void initChannel(SocketChannel socketChannel) {
                             socketChannel.pipeline().addLast("decoder", new StringDecoder());
                             socketChannel.pipeline().addLast("encoder", new StringEncoder());
                             socketChannel.pipeline().addLast("mainHandler", new MainHandler(commandManager));
