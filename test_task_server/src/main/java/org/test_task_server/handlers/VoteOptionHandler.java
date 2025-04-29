@@ -5,26 +5,41 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.RequiredArgsConstructor;
 import org.test_task_server.service.VotingService;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 public class VoteOptionHandler extends SimpleChannelInboundHandler<String> {
     private final String topicName;
     private final String voteName;
     private final String username;
     private final VotingService votingService;
+    private final List<String> options;
 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) {
         ctx.writeAndFlush("Введите вариант, за который голосуете:");
-
     }
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) {
-        String chosenOption = msg.trim();
+        String line = msg.trim();
+        int idx;
+        try{
+            idx = Integer.parseInt(line);
+        } catch (NumberFormatException e) {
+            ctx.writeAndFlush("Ошибка: введите число от 1 до " + options.size() + ":\n");
+            return;
+        }
+        if (idx < 1 || idx > options.size()) {
+            ctx.writeAndFlush("Ошибка: в диапазоне 1–" + options.size() + ". Повторите:\n");
+            return;
+        }
 
-        if (chosenOption.isEmpty()) {
+        if (line.isEmpty()) {
             ctx.writeAndFlush("Вариант не может быть пустым. Повторите ввод:");
             return;
         }
+        String chosenOption = options.get(idx-1);
         boolean success = votingService.vote(topicName, voteName, username, chosenOption);
         if (success) {
             ctx.writeAndFlush("Ваш голос учтен в голосовании '" + voteName + "' раздела '" + topicName + "'.");
@@ -36,7 +51,6 @@ public class VoteOptionHandler extends SimpleChannelInboundHandler<String> {
     }
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
         ctx.writeAndFlush("Ошибка при регистрации голоса: " + cause.getMessage() );
         ctx.pipeline().remove(this);
     }

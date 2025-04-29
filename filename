@@ -1,25 +1,36 @@
 {
-  "topic1" : {
-    "topicName" : "topic1",
+  "sports" : {
+    "topicName" : "sports",
     "votes" : { }
   },
-  "topic2" : {
-    "topicName" : "topic2",
-    "votes" : { }
-  },
-  "topic3" : {
-    "topicName" : "topic3",
+  "topic" : {
+    "topicName" : "topic",
     "votes" : {
-      "vote3" : {
-        "voteName" : "vote3",
-        "voteDescription" : "vote3",
-        "createdBy" : "il",
+      "myVote" : {
+        "voteName" : "myVote",
+        "voteDescription" : "AlsoSimpleVote",
+        "createdBy" : "name",
         "options" : [ "one", "two" ],
         "results" : {
-          "one" : [ "il", "name" ],
+          "one" : [ ],
           "two" : [ ]
+        }
+      },
+      "vote" : {
+        "voteName" : "vote",
+        "voteDescription" : "SimpleVote",
+        "createdBy" : "name",
+        "options" : [ "first", "second", "third" ],
+        "results" : {
+          "third" : [ "il" ],
+          "first" : [ ],
+          "second" : [ "name" ]
         }
       }
     }
+  },
+  "sporst" : {
+    "topicName" : "sporst",
+    "votes" : { }
   }
 }
